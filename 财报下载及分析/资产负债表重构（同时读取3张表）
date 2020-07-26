@@ -1,0 +1,172 @@
+import pandas as pd
+import glob
+import re
+
+time = '2020-03-31'
+time1 = '2019-12-31'
+code = []
+zcze = []
+jrzc = []
+yyzc = []
+yyfz = []
+yyzb = []
+gqtz = []
+jyzc = []
+dqzw = []
+cqzw = []
+gdqy = []
+chzz = []
+
+for name in glob.glob('E:/医药行业/zcfzb/*zcfzb.csv'):
+    coder = re.findall('\d{6}',name)
+    code.extend(coder)  #不要用append
+    df  = pd.read_csv(name)                                               #资产负债表
+    df1 = pd.read_csv('E:/医药行业/lrb/'+str(coder)[2:8]+'lrb.csv')           #利润表
+    df2 = pd.read_csv('E:/医药行业/xjllb/'+str(coder)[2:8]+'xjllb.csv')        #现金流量表 
+    df = df.replace('--',0)
+    df = df.replace(' --',0)
+    df1 = df1.replace('--',0)
+    df1 = df1.replace(' --',0)
+    df2 = df2.replace('--',0)
+    df2 = df2.replace(' --',0)
+    while True:
+        try:
+            zczer = float(df.loc[df['报告日期'] == '资产总计(万元)'][time].values)
+            
+            jrzcr = (float(df.loc[df['报告日期'] == '货币资金(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '交易性金融资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '发放贷款及垫款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '可供出售金融资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '持有至到期投资(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '投资性房地产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应收股利(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应收利息(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '其他流动资产(万元)'][time].values)+        
+                    float(df.loc[df['报告日期'] == '递延所得税资产(万元)'][time].values)+  
+                    float(df.loc[df['报告日期'] == '买入返售金融资产(万元)'][time].values))
+                  
+            yyzcr = (float(df.loc[df['报告日期'] == '应收票据(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应收账款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '预付款项(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '存货(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '其他流动资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '长期应收款(万元)'][time].values))
+           
+            yyfzr = (float(df.loc[df['报告日期'] == '应付票据(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付账款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '预收账款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付职工薪酬(万元)'][time].values)+
+                    #float(df.loc[df['报告日期'] == '应付手续费及佣金']['2020-03-31'].values)+
+                    float(df.loc[df['报告日期'] == '应交税费(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '其他流动负债(万元)'][time].values)+         
+                    float(df.loc[df['报告日期'] == '递延所得税负债(万元)'][time].values)+       
+                    float(df.loc[df['报告日期'] == '专项应付款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '递延收益(万元)'][time].values)+          
+                    float(df.loc[df['报告日期'] == '长期递延收益(万元)'][time].values)) 
+            
+            yyzbr = yyzcr-yyfzr  
+            
+            gqtzr = float(df.loc[df['报告日期'] == '长期股权投资(万元)'][time].values)
+            
+            jyzcr = (float(df.loc[df['报告日期'] == '固定资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '在建工程(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '工程物资(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '固定资产清理(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '生产性生物资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '油气资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '无形资产(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '开发支出(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '商誉(万元)'][time].values)+        
+                    float(df.loc[df['报告日期'] == '递延所得税资产(万元)'][time].values)+  
+                    float(df.loc[df['报告日期'] == '长期待摊费用(万元)'][time].values))
+            
+            dqzwr = (float(df.loc[df['报告日期'] == '短期借款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '交易性金融负债(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付利息(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付短期债券(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '一年内到期的非流动负债(万元)'][time].values))
+            
+            cqzwr = (float(df.loc[df['报告日期'] == '长期借款(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付债券(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '长期应付款(万元)'][time].values))
+            
+            gdqyr = (float(df.loc[df['报告日期'] == '实收资本(或股本)(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '资本公积(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '专项储备(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '盈余公积(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '一般风险准备(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '未分配利润(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '应付股利(万元)'][time].values)+
+                    float(df.loc[df['报告日期'] == '外币报表折算差额(万元)'][time].values))
+            
+            chzzr = 2*(float(df1.loc[df1['报告日期'] == '营业收入(万元)'][time].values)-
+                             float(df1.loc[df1['报告日期'] == '其他业务收入(万元)'][time].values))/(
+                            float(df.loc[df['报告日期'] == '存货(万元)'][time].values)+
+                             float(df.loc[df['报告日期'] == '存货(万元)'][time1].values))
+                                                                         
+            
+            zcze.append(zczer)
+            jrzc.append(jrzcr)  #不要extend   
+            yyzc.append(yyzcr)
+            yyfz.append(yyfzr)
+            yyzb.append(yyzbr)
+            gqtz.append(gqtzr)
+            jyzc.append(jyzcr)
+            dqzw.append(dqzwr)
+            cqzw.append(cqzwr)
+            gdqy.append(gdqyr)
+            chzz.append(chzzr)
+            break
+        except Exception as e:
+            zczer = 0
+            jrzcr = 0
+            yyzcr = 0
+            yyfzr = 0
+            yyzbr = 0
+            gqtzr = 0
+            jyzcr = 0
+            dqzwr = 0
+            cqzwr = 0
+            gdqyr = 0
+            chzzr = 0
+            zcze.append(zczer)
+            jrzc.append(jrzcr)
+            yyzc.append(yyzcr)
+            yyfz.append(yyfzr)
+            yyzb.append(yyzbr)
+            gqtz.append(gqtzr)
+            jyzc.append(jyzcr)
+            dqzw.append(dqzwr)
+            cqzw.append(cqzwr)
+            gdqy.append(gdqyr)
+            chzz.append(chzzr)
+            print(coder,e)
+            break       #不要写成continue
+            
+            
+            
+ new_zcfzb = pd.DataFrame(columns = ['股票代码','总资产','金融资产','营运资产','营运负债','营运资本','股权投资','长期经营资产','短期债务',
+                                    '长期债务','股东权益','存货周转次数'])
+new_zcfzb['股票代码'] = code
+new_zcfzb['总资产'] = zcze
+new_zcfzb['金融资产'] = jrzc
+new_zcfzb['营运资产'] = yyzc
+new_zcfzb['营运负债'] = yyfz
+new_zcfzb['营运资本'] = yyzb
+new_zcfzb['股权投资'] = gqtz
+new_zcfzb['长期经营资产'] = jyzc
+new_zcfzb['短期债务'] = dqzw
+new_zcfzb['长期债务'] = cqzw
+new_zcfzb['股东权益'] = gdqy
+new_zcfzb['存货周转次数'] = chzz
+new_zcfzb['金融资产占比'] = new_zcfzb['金融资产'] / new_zcfzb['总资产']
+new_zcfzb['长期经营资产占比'] = new_zcfzb['长期经营资产'] / new_zcfzb['总资产']
+new_zcfzb['营运资本占比'] = new_zcfzb['营运资本'] / new_zcfzb['总资产']
+new_zcfzb['长期股权投资占比'] = new_zcfzb['股权投资'] / new_zcfzb['总资产']
+new_zcfzb['股权资本比率'] = new_zcfzb['股东权益'] / new_zcfzb['总资产']
+new_zcfzb['有息债务率'] = (new_zcfzb['短期债务'] + new_zcfzb['长期债务'])/ new_zcfzb['总资产']
+new_zcfzb['财务杠杆比率']=1 /new_zcfzb['股权资本比率']
+new_zcfzb['营运资本长期化率'] = (new_zcfzb['长期债务'] + new_zcfzb['股东权益']- new_zcfzb['长期经营资产']- new_zcfzb['股权投资'] )/ new_zcfzb['营运资本']
+
+new_zcfzb.to_csv('E:/医药制造行业资产资本表.csv',encoding='utf_8_sig')
+    
