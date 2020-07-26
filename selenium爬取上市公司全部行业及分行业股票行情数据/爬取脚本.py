@@ -21,7 +21,7 @@ browser=webdriver.Chrome('D:/chromedriver')
 def get_total_page(url):            #获取某行业股票总页数
 #     browser=webdriver.Chrome('D:/chromedriver')
 #     browser.get(url)
-#     time.sleep(1)
+    time.sleep(1)
     inputpage = browser.find_element_by_css_selector('#PageCont')
 #     print(inputpage.text)
     pa = re.findall(r'\d+',inputpage.text)
