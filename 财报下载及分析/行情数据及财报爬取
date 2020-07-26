@@ -1,0 +1,143 @@
+import pandas as pd
+
+df = pd.read_csv('E:/hangye/医药制造.csv',encoding="gbk",header=None)
+stockid = list(df.iloc[:,1].astype(str))
+newid = []
+for i in stockid:
+    i = i.zfill(6)
+    newid.append(i)
+
+#获取基本行情数据
+import re,urllib
+import xlwt
+import hashlib
+from time import sleep
+gpdm=[]
+gpmc=[]
+price=[]
+volume =[] 
+change = []
+changep = []
+zsz = []
+ltsz=[]
+syl=[]
+sjl = []
+for count in newid:
+    if count[0]== '6' or count[0]== '9' :         #这里要加单引号，不是int而是str
+        print(count[0])
+        url = 'http://qt.gtimg.cn/q=sh'+ str(count)
+        print(url)
+    else:
+        print(count[0])
+        url = 'http://qt.gtimg.cn/q=sz'+ str(count)
+        print(url)
+    while True:
+        try:
+            content = urllib.request.urlopen(url,timeout=2).read()
+            content = content.decode("gbk").encode("utf-8").decode("utf8","ignore")
+            #content = content.decode("gbk").encode("utf-8")
+            content = content.split('~')
+            hq = pd.DataFrame(content)
+            #print(hq)
+            gpdm.append(hq[0][2])
+            gpmc.append(hq[0][1])
+            price.append(hq[0][3])
+            volume.append(hq[0][6])
+            change.append(hq[0][31])
+            changep.append(hq[0][32])
+            zsz.append(hq[0][45])
+            ltsz.append(hq[0][44])        
+            syl.append(hq[0][52])
+            sjl.append(hq[0][46])
+            data = pd.DataFrame([gpdm,gpmc,price,volume,change,changep,zsz,ltsz,syl,sjl])
+            hqdata = pd.DataFrame(data.values.T,columns = ['股票代码','股票名称','当前价格','成交量','涨跌','涨跌幅','总市值','流通市值','市盈率','市净率'])
+            #print(hqdata)
+            #with open('E:/hangqing/'+str(count)+'hq.csv','wb') as f:
+                #f.write(hq)
+            sleep(0.5)
+            #hqdata.to_csv('E:/hangqing/'+str(count)+'hq.csv')
+            print(count)
+            break
+        except Exception as e:
+            print(count,e)
+            break
+        print(count)
+hqdata.to_csv('E:/hangqing/hqdata_医药制造.csv')
+print('爬取结束')
+
+#爬取基本财务指标
+import re,urllib
+from time import sleep
+for count in newid:
+    url  = 'http://quotes.money.163.com/service/zycwzb_'+str(count)+'.html?type=report'
+    print(url)
+    while True:
+        try:
+            content = urllib.request.urlopen(url,timeout=2).read()
+            content = content.decode("gbk").encode("utf-8")
+            with open('E:/医药行业/cwzb/'+str(count)+'cwzb.csv','wb')as f:
+                f.write(content)
+            data = pd.read_csv('E:/医药行业/cwzb/'+str(count)+'cwzb.csv')
+            break
+            sleep(1) 
+        except Exception as e:
+            print(e,count)
+            break
+            
+#爬取资产负债表
+import re,urllib
+from time import sleep
+for count in newid:
+    url  = 'http://quotes.money.163.com/service/zcfzb_'+str(count)+'.html'
+    print(url)
+    while True:
+        try:
+            content = urllib.request.urlopen(url,timeout=2).read()
+            content = content.decode("gbk").encode("utf-8")
+            with open('E:/医药行业/zcfzb/'+str(count)+'zcfzb.csv','wb')as f:
+                f.write(content)
+            data = pd.read_csv('E:/医药行业/zcfzb/'+str(count)+'zcfzb.csv')
+            break
+            sleep(3) 
+        except Exception as e:
+            print(e,count)
+            break
+            
+ #爬取利润表
+import re,urllib
+from time import sleep
+for count in newid:
+    url  = 'http://quotes.money.163.com/service/lrb_'+str(count)+'.html'
+    print(url)
+    while True:
+        try:
+            content = urllib.request.urlopen(url,timeout=2).read()
+            content = content.decode("gbk").encode("utf-8")
+            with open('E:/医药行业/lrb/'+str(count)+'lrb.csv','wb')as f:
+                f.write(content)
+            data = pd.read_csv('E:/医药行业/lrb/'+str(count)+'lrb.csv')
+            break
+            sleep(3) 
+        except Exception as e:
+            print(e,count)
+            break
+            
+#爬取现金流量表
+import re,urllib
+from time import sleep
+for count in newid:
+    url  = 'http://quotes.money.163.com/service/xjllb_'+str(count)+'.html'
+    print(url)
+    while True:
+        try:
+            content = urllib.request.urlopen(url,timeout=2).read()
+            content = content.decode("gbk").encode("utf-8")
+            with open('E:/医药行业/xjllb/'+str(count)+'xjllb.csv','wb')as f:
+                f.write(content)
+            data = pd.read_csv('E:/医药行业/xjllb/'+str(count)+'xjllb.csv')
+            break
+            sleep(3) 
+        except Exception as e:
+            print(e,count)
+            break
+            
